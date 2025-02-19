@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, type ViewProps } from 'react-native';
 import { useState, useEffect } from 'react';
-
+import * as utils from './utils';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 export type ThemedViewProps = ViewProps & {
@@ -20,12 +20,14 @@ export function EventBlock({ name, date }: ThemedViewProps) {
   };
 
   // Find a way to parse date or set a universal date/time format
-  const [daysLeft, setDaysLeft] = useState(calculateDaysLeft("December 17, 1995 03:24:00"));
+  const [daysLeft, setDaysLeft] = useState(utils.getDaysDiff(date));
+  const [hoursLeft, setHoursLeft] = useState(utils.getHoursDiff(date));
 
   useEffect(() => {
-      const timer = setInterval(() => {
-            setDaysLeft(calculateDaysLeft(date));
-        }, 86400000);
+    const timer = setInterval(() => {
+      setDaysLeft(utils.getDaysDiff(date));
+      setHoursLeft(utils.getHoursDiff(date));
+    })
     return () => clearInterval(timer);
   },[date])
 
