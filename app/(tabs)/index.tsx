@@ -4,6 +4,8 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { EventBlock } from '@/components/EventBlock';
+
 
 export default function HomeScreen() {
   return (
@@ -50,6 +52,8 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <EventBlock name="Eric" date='December 17, 1995 03:24:00'></EventBlock>
+      <EventBlock name="Charlie" date='December 17, 2025 03:24:00'></EventBlock>
     </ParallaxScrollView>
   );
 }
