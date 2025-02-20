@@ -9,15 +9,6 @@ export type ThemedViewProps = ViewProps & {
 };
 
 export function EventBlock({ name, date }: ThemedViewProps) {
-  const calculateDaysLeft = (eventDate : string) => {
-      const eventTime = new Date(eventDate).getTime();
-      const currTime = new Date().getTime();
-      const difference = eventTime - currTime;
-      if (difference < 0) {
-          return 0;
-      }
-      return Math.ceil(difference / (1000 * 60 * 60 * 24));
-  };
 
   // Find a way to parse date or set a universal date/time format
   const [daysLeft, setDaysLeft] = useState(utils.getDaysDiff(date));
@@ -27,15 +18,22 @@ export function EventBlock({ name, date }: ThemedViewProps) {
     const timer = setInterval(() => {
       setDaysLeft(utils.getDaysDiff(date));
       setHoursLeft(utils.getHoursDiff(date));
-    })
+    }, 1000 * 60 * 60);
+
     return () => clearInterval(timer);
   },[date])
+
+  const renderTimeLeft = () => {
+    if (daysLeft > 0) return <Text style={styles.daysLeft}>{daysLeft} days left</Text>;
+    if (hoursLeft > 0) return <Text style={styles.daysLeft}>{hoursLeft} hours left</Text>;
+    return <Text style={styles.daysLeft}>Event is happening now!</Text>;
+  };
 
     return (
       <View style={styles.card}>
         <Text style={styles.title}>{name}</Text>
         <Text style={styles.date}>{new Date(date).toDateString()}</Text>
-        <Text style={styles.daysLeft}>{daysLeft} days left</Text>
+        {renderTimeLeft()}
       </View>
     );
 }
