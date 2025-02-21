@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { EventBlock } from "./EventBlock"; 
 
+enum Element {
+    HEADER = "header",
+    EVENT = "event",
+};
+
 // Days left is handled by Event Block - bring out for easier sorting?
 // Sort by days left and then separate by months?
+// type: header or element
 interface ListElemProps {
     type: string;
-    element: EventProps | MonthTextProps;
-}
+    element: EventProps | MonthTextProps | YearTextProps;
+};
 
 interface EventProps {
     id: number;
@@ -17,6 +23,10 @@ interface EventProps {
 
 interface MonthTextProps {
     month: string;
+};
+
+interface YearTextProps {
+    year: string;
 };
 
 
@@ -36,26 +46,41 @@ export function EventsList(
     // Find closest days
     const groupedEvents: ListElemProps[] = [];
     let lastMonth = "";
+    let lastYear = "";
+    
 
+    // Determine if a header needs to be inserted and push header and events information into sorted list
     sortedEvents.forEach((event) => {
         const eventDate = new Date(event.date);
         // WHat does this actually output
-        const monthYear = eventDate.toLocaleString("default", { month: "long", year: "numeric" });
-        
-        if (monthYear != lastMonth) {
-            const monthText : MonthTextProps = { month: monthYear };
-            const monthHeaderElem : ListElemProps = { type: "header", element: monthText };
-            groupedEvents.push(monthHeaderElem);
-            lastMonth = monthYear;
+        const monthYear = eventDate.toLocaleString("default", { month: "long", year: "numeric" }).split(" ");
+        const monthStr = monthYear[0];
+        const yearStr = monthYear[1];     
+
+        if (yearStr != lastYear) {
+            const yearText : YearTextProps = { year: yearStr };
+            const yearHeaderElem : ListElemProps = { type: Element.HEADER, element: yearText };
+            groupedEvents.push(yearHeaderElem);
+            lastYear = yearStr;
         }
 
-        const eventElem : ListElemProps = { type: "event", element: event }
+        if (monthStr != lastMonth) {
+            const monthText : MonthTextProps = { month: monthStr };
+            const monthHeaderElem : ListElemProps = { type: Element.HEADER, element: monthText };
+            groupedEvents.push(monthHeaderElem);
+            lastMonth = monthStr;
+        }
+
+        const eventElem : ListElemProps = { type: Element.EVENT, element: event }
         groupedEvents.push(eventElem)
     }, [events]);
 
     return (
+        
         // <FlatList   
-        //     data = {}
+        //     data = {sortedEvents}
+        //     keyExtractor={(item) => (item.type === Element.HEADER ? )}
+        //     renderItem={}
         // />
         <View></View>
     );

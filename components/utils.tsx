@@ -68,3 +68,9 @@ export function formatDate(date: string): string {
     const year = dateObj.getFullYear();
     return `${months[month]} ${day}${getDaySuffix(day)}`;
 }
+
+// For case when use only inputs for month and day
+export function monthDayToDate(month: string, day: string) {
+    // TODO: Implement
+    const date = new Date();
+}
