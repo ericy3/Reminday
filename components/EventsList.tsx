@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, SectionList, StyleSheet } from "react-native";
 import { EventBlock } from "./EventBlock"; 
 
-enum Element {
-    HEADER = "header",
-    EVENT = "event",
-};
+interface EventSection {
+    title: string;  // month value
+    data: EventProps[];
+    year: string;
+    id: number;
+}
 
 // Days left is handled by Event Block - bring out for easier sorting?
 // Sort by days left and then separate by months?
 // type: header or element
-interface ListElemProps {
-    type: string;
-    element: EventProps | MonthTextProps | YearTextProps;
-};
 
 interface EventProps {
     id: number;
@@ -21,67 +19,88 @@ interface EventProps {
     date: string;
 };
 
-interface MonthTextProps {
-    month: string;
-};
-
-interface YearTextProps {
-    year: string;
-};
-
 
 export function EventsList(
     events: Array<EventProps>,
 ) {
-    const [date, setDate] = useState(Date());
-    const sortedEvents = [...events].sort((event) => new Date(event.date).getTime() - new Date(date).getTime());
-
+    const [sections, setSections] = useState<EventSection[]>([]);
+    
     useEffect(() => {
-        const timer = setInterval(() => {
-            setDate(Date());
-          }, 1000 * 60 * 60);
-          return () => clearInterval(timer);
-    }, []);
+        const sorted = [...events].sort((event) => new Date(event.date).getTime() - new Date().getTime());
+        const groupedEvents: { [year: string]: { [month: string]: EventProps[] } } = {};
 
-    // Find closest days
-    const groupedEvents: ListElemProps[] = [];
-    let lastMonth = "";
-    let lastYear = "";
+        sorted.forEach((event) => {
+            const eventDate = new Date(event.date);
+            const year = eventDate.getFullYear.toString();
+            const month = eventDate.toLocaleString("default", { month : "long" });
+
+            if (!(year in groupedEvents)) {
+                groupedEvents[year] = {};
+            }
+            
+            if (!(month in groupedEvents[year])) {
+                groupedEvents[year][month] = [];
+            }
+
+            groupedEvents[year][month].push(event);
+        });
+
+        const sectionData: EventSection[] = [];
+        let index = 0;
+        Object.keys(groupedEvents).forEach((year) => {
+            Object.keys(groupedEvents[year]).forEach((month) => {
+                sectionData.push({
+                    title: month,
+                    data: groupedEvents[year][month],
+                    year: year,
+                    id: index,
+                })
+                index++;
+            });
+        });
+        setSections(sectionData);
+    }, [events]);
     
 
-    // Determine if a header needs to be inserted and push header and events information into sorted list
-    sortedEvents.forEach((event) => {
-        const eventDate = new Date(event.date);
-        // WHat does this actually output
-        const monthYear = eventDate.toLocaleString("default", { month: "long", year: "numeric" }).split(" ");
-        const monthStr = monthYear[0];
-        const yearStr = monthYear[1];     
-
-        if (yearStr != lastYear) {
-            const yearText : YearTextProps = { year: yearStr };
-            const yearHeaderElem : ListElemProps = { type: Element.HEADER, element: yearText };
-            groupedEvents.push(yearHeaderElem);
-            lastYear = yearStr;
-        }
-
-        if (monthStr != lastMonth) {
-            const monthText : MonthTextProps = { month: monthStr };
-            const monthHeaderElem : ListElemProps = { type: Element.HEADER, element: monthText };
-            groupedEvents.push(monthHeaderElem);
-            lastMonth = monthStr;
-        }
-
-        const eventElem : ListElemProps = { type: Element.EVENT, element: event }
-        groupedEvents.push(eventElem)
-    }, [events]);
 
     return (
-        
-        // <FlatList   
-        //     data = {sortedEvents}
-        //     keyExtractor={(item) => (item.type === Element.HEADER ? )}
-        //     renderItem={}
-        // />
-        <View></View>
+        <SectionList   
+            sections = { sections }
+            keyExtractor={(item) => `event-${item.id}`}
+            renderSectionHeader={({ section }) => {
+                const index = section.id;
+                return (
+                <>
+                    {index === 0 || section.year !== sections[index - 1]?.year ? (
+                        <Text style={styles.yearHeader}>{section.year}</Text>
+                    ) : null}
+                    <Text style={styles.monthHeader}>{section.title}</Text>
+                </>
+            );
+        }}
+            renderItem={({item}) => <EventBlock name={item.name} date={item.date} /> }
+        />
     );
 }
+
+const styles = StyleSheet.create({
+    yearHeader: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#000",
+        textAlign: "center",
+        marginTop: 20,
+        paddingVertical: 8,
+        backgroundColor: "#ddd",
+      },
+      monthHeader: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 8,
+        marginBottom: 4,
+        textAlign: "center",
+        color: "#333",
+        backgroundColor: "#f0f0f0",
+        paddingVertical: 5,
+      },
+});
