@@ -5,6 +5,12 @@ interface TimeDifference {
     hours: number;
 }
 
+export interface EventProps {
+    id: number;
+    name: string;
+    date: string;
+};
+
 const months: Record<number, string> = {
     1: "January",
     2: "February",
@@ -90,3 +96,27 @@ export function monthDayToDate(month: string, day: string) {
     // TODO: Implement
     const date = new Date();
 }
+
+export const events: Array<EventProps> =
+[
+    { "id": 1, "date": "2025-01-01", "name": "New Year's celebration" },
+    { "id": 2, "date": "2025-02-14", "name": "Valentine’s Day date" },
+    { "id": 3, "date": "2025-03-22", "name": "Big hiking trip with friends" },
+    { "id": 4, "date": "2025-04-15", "name": "Tax deadline stress" },
+    { "id": 5, "date": "2025-05-30", "name": "Friend’s wedding" },
+    { "id": 6, "date": "2025-06-21", "name": "First day of summer BBQ" },
+    { "id": 7, "date": "2025-07-12", "name": "Family reunion weekend" },
+    { "id": 8, "date": "2025-08-18", "name": "Start of new job" },
+    { "id": 9, "date": "2025-09-07", "name": "Fantasy football draft" },
+    { "id": 10, "date": "2025-10-31", "name": "Halloween party" },
+    { "id": 11, "date": "2025-11-27", "name": "Thanksgiving dinner" },
+    { "id": 12, "date": "2025-12-31", "name": "New Year's Eve party" },
+    { "id": 13, "date": "2026-02-20", "name": "Vacation to Europe" },
+    { "id": 14, "date": "2026-04-08", "name": "Total solar eclipse watch party" },
+    { "id": 15, "date": "2026-06-10", "name": "Moving to a new city" },
+    { "id": 16, "date": "2026-07-19", "name": "Summer music festival" },
+    { "id": 17, "date": "2026-09-03", "name": "Back to school shopping" },
+    { "id": 18, "date": "2027-05-14", "name": "Sister’s graduation" },
+    { "id": 19, "date": "2027-08-29", "name": "Anniversary trip" },
+    { "id": 20, "date": "2028-06-11", "name": "Attending the Los Angeles Olympics" }
+  ]

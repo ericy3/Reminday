@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, SectionList, StyleSheet } from "react-native";
 import { EventBlock } from "./EventBlock"; 
+import { EventProps } from "./utils";
 
 interface EventSection {
     title: string;  // month value
@@ -13,15 +14,9 @@ interface EventSection {
 // Sort by days left and then separate by months?
 // type: header or element
 
-interface EventProps {
-    id: number;
-    name: string;
-    date: string;
-};
-
 
 export function EventsList(
-    events: Array<EventProps>,
+    { events }: { events: Array<EventProps> }
 ) {
     const [sections, setSections] = useState<EventSection[]>([]);
     
@@ -31,7 +26,7 @@ export function EventsList(
 
         sorted.forEach((event) => {
             const eventDate = new Date(event.date);
-            const year = eventDate.getFullYear.toString();
+            const year = eventDate.getFullYear().toString();
             const month = eventDate.toLocaleString("default", { month : "long" });
 
             if (!(year in groupedEvents)) {
