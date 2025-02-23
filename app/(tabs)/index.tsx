@@ -52,8 +52,8 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <EventBlock name="Eric" date='December 17, 1995 03:24:00'></EventBlock>
-      <EventBlock name="Charlie" date='December 17, 2025 03:24:00'></EventBlock>
+      <EventBlock name="Eric" date='2025-11-01'></EventBlock>
+      <EventBlock name="Charlie" date='2026-02-07'></EventBlock>
     </ParallaxScrollView>
   );
 }

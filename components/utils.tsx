@@ -30,7 +30,6 @@ export function getDateDiff(eventDate : string): TimeDifference {
     const dayDiff = Math.floor(hourDiff / 24);
     const monthDiff = Math.floor(dayDiff / 30);
     const yearDiff = Math.floor(monthDiff / 12);
-    
     return {
         years: yearDiff,
         months: monthDiff,
@@ -67,6 +66,23 @@ export function formatDate(date: string): string {
     const day = dateObj.getDate();
     const year = dateObj.getFullYear();
     return `${months[month]} ${day}${getDaySuffix(day)}`;
+}
+
+export function parseDate(date: string): { year: number, month: number, day: number } | null {
+    const dateRegex = /(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})|(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
+    const match = date.match(dateRegex);
+
+    if (!match) return null;
+
+    if (match[1]) {
+        // Format: YYYY-MM-DD
+        return { year: parseInt(match[1]), month: parseInt(match[2]), day: parseInt(match[3]) };
+    } else if (match[4]) {
+        // Format: MM-DD-YYYY
+        return { year: parseInt(match[6]), month: parseInt(match[4]), day: parseInt(match[5]) };
+    }
+
+    return null; // If no valid format is found
 }
 
 // For case when use only inputs for month and day
