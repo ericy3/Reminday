@@ -18,3 +18,7 @@ func Connect() (*sql.DB, error) {
 	dbURL := os.Getenv("DATABASE_URL")
 	return sql.Open("postgres", dbURL)
 }
+
+func UserExists(username string) {
+
+}
