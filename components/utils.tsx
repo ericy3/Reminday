@@ -16,6 +16,7 @@ export interface EventProps {
     name: string;
     date: string;
     isBirthday?: boolean;
+    birthdayYear?: number;
 };
 
 const months: Record<number, string> = {
@@ -121,7 +122,7 @@ export function monthDayToDate(month: string, day: string) {
 
 export const events: Array<EventProps> =
 [
-    { "id": 1, "date": "2025-01-02", "name": "Bob's Birthday", "isBirthday": true },
+    { "id": 1, "date": "2025-01-02", "name": "Bob's Birthday", "isBirthday": true, "birthdayYear": 2025 },
     { "id": 2, "date": "2025-02-14", "name": "Valentine’s Day date" },
     { "id": 3, "date": "2025-03-22", "name": "Big hiking trip with friends" },
     { "id": 4, "date": "2025-04-15", "name": "Tax deadline stress" },

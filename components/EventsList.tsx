@@ -74,15 +74,18 @@ export function EventsList(
             renderSectionHeader={({ section }) => {
                 const index = section.id;
                 return (
-                <>
-                    {index === 0 || section.year !== sections[index - 1]?.year ? (
-                        <Text style={styles.yearHeader}>{section.year}</Text>
-                    ) : null}
-                    <Text style={styles.monthHeader}>{section.title}</Text>
-                </>
-            );
-        }}
-            renderItem={({item}) => <EventBlock name={item.name} date={item.date} /> }
+                    <>
+                        {index === 0 || section.year !== sections[index - 1]?.year ? (
+                            <Text style={styles.yearHeader}>{section.year}</Text>
+                        ) : null}
+                        <Text style={styles.monthHeader}>{section.title}</Text>
+                    </>
+                );
+            }}
+            renderItem={({item}) => {
+                const props = {name: item.name, date: item.date, isBirthday: item.isBirthday, birthdayYear: item.birthdayYear}
+                return <EventBlock {...props}/>
+            }}
         />
     );
 }
