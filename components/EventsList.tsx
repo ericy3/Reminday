@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, SectionList, StyleSheet } from "react-native";
 import { EventBlock } from "./EventBlock"; 
-import { EventProps } from "./utils";
+import { EventProps, nextBirthdayDate } from "./utils";
 
 interface EventSection {
     title: string;  // month value
@@ -21,7 +21,16 @@ export function EventsList(
     const [sections, setSections] = useState<EventSection[]>([]);
     
     useEffect(() => {
-        const sorted = [...events].sort((event) => new Date(event.date).getTime() - new Date().getTime());
+        // Remove expired events that aren't birthdays + update next birthday date if applicable
+        const valid_events = [...events]
+        .filter((event) => (new Date(event.date) > new Date() || event.isBirthday))
+        .map((event) => {
+            if (event.isBirthday) {
+                return { ...event, date: nextBirthdayDate(event.date) };
+            }
+            return event;
+        })
+        const sorted = [...valid_events].sort((event) => new Date(event.date).getTime() - new Date().getTime());
         const groupedEvents: { [year: string]: { [month: string]: EventProps[] } } = {};
 
         sorted.forEach((event) => {
@@ -65,15 +74,18 @@ export function EventsList(
             renderSectionHeader={({ section }) => {
                 const index = section.id;
                 return (
-                <>
-                    {index === 0 || section.year !== sections[index - 1]?.year ? (
-                        <Text style={styles.yearHeader}>{section.year}</Text>
-                    ) : null}
-                    <Text style={styles.monthHeader}>{section.title}</Text>
-                </>
-            );
-        }}
-            renderItem={({item}) => <EventBlock name={item.name} date={item.date} /> }
+                    <>
+                        {index === 0 || section.year !== sections[index - 1]?.year ? (
+                            <Text style={styles.yearHeader}>{section.year}</Text>
+                        ) : null}
+                        <Text style={styles.monthHeader}>{section.title}</Text>
+                    </>
+                );
+            }}
+            renderItem={({item}) => {
+                const props = {name: item.name, date: item.date, isBirthday: item.isBirthday, birthdayYear: item.birthdayYear}
+                return <EventBlock {...props}/>
+            }}
         />
     );
 }

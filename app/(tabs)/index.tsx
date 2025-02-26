@@ -1,28 +1,21 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, View, Text } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { EventBlock } from '@/components/EventBlock';
 import { EventsList } from '@/components/EventsList';
 import { events } from '@/components/utils'
 
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <EventBlock name="Eric" date='2025-11-01'></EventBlock>
-      <EventBlock name="Charlie" date='2026-02-07'></EventBlock>
+    <View style={styles.eventsContainer}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Upcoming Events</Text>
+      </View>
       <EventsList events={events}/>
-    </ParallaxScrollView>
+    </View>
   );
 }
 
@@ -31,16 +24,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    padding: 24,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  eventsContainer: {
+    alignItems: 'center',
+    padding: 16,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });

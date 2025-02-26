@@ -5,10 +5,18 @@ interface TimeDifference {
     hours: number;
 }
 
+interface DateBreakdown {
+    year: number;
+    month: number;
+    day: number;
+}
+
 export interface EventProps {
     id: number;
     name: string;
     date: string;
+    isBirthday?: boolean;
+    birthdayYear?: number;
 };
 
 const months: Record<number, string> = {
@@ -74,7 +82,7 @@ export function formatDate(date: string): string {
     return `${months[month]} ${day}${getDaySuffix(day)}`;
 }
 
-export function parseDate(date: string): { year: number, month: number, day: number } | null {
+export function parseDate(date: string): DateBreakdown | null {
     const dateRegex = /(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})|(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
     const match = date.match(dateRegex);
 
@@ -82,13 +90,28 @@ export function parseDate(date: string): { year: number, month: number, day: num
 
     if (match[1]) {
         // Format: YYYY-MM-DD
-        return { year: parseInt(match[1]), month: parseInt(match[2]), day: parseInt(match[3]) };
+        return { year: parseInt(match[1]), month: parseInt(match[2]) - 1, day: parseInt(match[3]) };
     } else if (match[4]) {
         // Format: MM-DD-YYYY
-        return { year: parseInt(match[6]), month: parseInt(match[4]), day: parseInt(match[5]) };
+        return { year: parseInt(match[6]), month: parseInt(match[4]) - 1, day: parseInt(match[5]) };
     }
 
     return null; // If no valid format is found
+}
+
+export function nextBirthdayDate(date: string): string {
+    const dateInfo : DateBreakdown | null = parseDate(date);
+    if (!dateInfo) {
+        return ""
+    }
+    const currTime = new Date();
+    const thisYear = currTime.getFullYear();
+
+    const month : number = dateInfo.month;
+    const day : number = dateInfo.day;
+    const currYearBirthday = new Date(thisYear, month, day)
+
+    return currYearBirthday > currTime ? currYearBirthday.toDateString() : new Date(thisYear + 1, month, day).toDateString();
 }
 
 // For case when use only inputs for month and day
@@ -99,7 +122,7 @@ export function monthDayToDate(month: string, day: string) {
 
 export const events: Array<EventProps> =
 [
-    { "id": 1, "date": "2025-01-01", "name": "New Year's celebration" },
+    { "id": 1, "date": "2025-01-02", "name": "Bob's Birthday", "isBirthday": true, "birthdayYear": 2025 },
     { "id": 2, "date": "2025-02-14", "name": "Valentine’s Day date" },
     { "id": 3, "date": "2025-03-22", "name": "Big hiking trip with friends" },
     { "id": 4, "date": "2025-04-15", "name": "Tax deadline stress" },

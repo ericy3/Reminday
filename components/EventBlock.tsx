@@ -6,9 +6,11 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export type ThemedViewProps = ViewProps & {
   name: string;
   date: string;
+  isBirthday?: boolean;
+  birthdayYear?: number;
 };
 
-export function EventBlock({ name, date }: ThemedViewProps) {
+export function EventBlock({ name, date, isBirthday, birthdayYear }: ThemedViewProps) {
 
   // Find a way to parse date or set a universal date/time format
   const [daysLeft, setDaysLeft] = useState<number>(utils.getDaysDiff(date));
@@ -29,10 +31,18 @@ export function EventBlock({ name, date }: ThemedViewProps) {
     return <Text style={styles.daysLeft}>Event is happening now! Days ${hoursLeft}</Text>;
   };
 
+  const birthdayAge = () => {
+    if (isBirthday && birthdayYear) {
+      const age = new Date(date).getFullYear() - birthdayYear;
+      return <Text style={styles.daysLeft}> Turning {age}</Text>;
+    }
+  }
+
     return (
       <View style={styles.card}>
         <Text style={styles.title}>{name}</Text>
         <Text style={styles.date}>{utils.formatDate(date)}</Text>
+        {birthdayAge()}
         {renderTimeLeft()}
       </View>
     );
