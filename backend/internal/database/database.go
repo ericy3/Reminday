@@ -27,7 +27,18 @@ func Connect() (*sql.DB, error) {
 	return sql.Open("postgres", dbURL)
 }
 
-func (c *postgreSQLClient) UserExists(username string) (bool, error) {
+func NewPostgreSQLClient() postgreSQLClient {
+	db, err := Connect()
+	if err != nil {
+		fmt.Errorf("Error connecting to database %w", err)
+	}
+
+	return postgreSQLClient{
+		databaseStore: db,
+	}
+}
+
+func (c postgreSQLClient) UserExists(username string) (bool, error) {
 	var exists bool
 	query := "SELECT EXISTS (SELECT 1 FROM users WHERE username = $1)"
 	err := c.databaseStore.QueryRow(query, username).Scan(&exists)
@@ -37,7 +48,7 @@ func (c *postgreSQLClient) UserExists(username string) (bool, error) {
 	return exists, nil
 }
 
-func (c *postgreSQLClient) InsertUser(user types.User) error {
+func (c postgreSQLClient) InsertUser(user types.User) error {
 	query := "INSERT INTO users (username, passwordHash, userId) VALUES ($1, $2, $3)"
 	// Need a symbolic link for accessing events that is user unique - UUID
 	_, err := c.databaseStore.Exec(query, user.Username, user.PasswordHash, uuid.New())
@@ -48,7 +59,7 @@ func (c *postgreSQLClient) InsertUser(user types.User) error {
 	return nil
 }
 
-func (c *postgreSQLClient) GetUser(username string) (types.User, error) {
+func (c postgreSQLClient) GetUser(username string) (types.User, error) {
 	var user types.User
 
 	query := "SELECT username, passwordHash FROM users WHERE username=$1"
