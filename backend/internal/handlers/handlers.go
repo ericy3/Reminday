@@ -108,6 +108,9 @@ func (api ApiHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	accessToken := types.CreateToken(user)
+	successMsg := fmt.Sprintf(`{"access_token" :  "%s"}`, accessToken)
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Successfully logged in."))
+	w.Write([]byte(successMsg))
 }

@@ -6,10 +6,11 @@ import (
 	"os"
 
 	"fmt"
+	"reminday-backend/internal/types"
+
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"reminday-backend/internal/types"
 )
 
 type postgreSQLClient struct {
@@ -22,7 +23,7 @@ func Connect() (*sql.DB, error) {
 		log.Fatal("Error loading .env file")
 	}
 
-	dbURL := os.Getenv("DATABASE_URL")
+	dbURL := os.Getenv("USER_DATABASE_URL")
 	return sql.Open("postgres", dbURL)
 }
 
